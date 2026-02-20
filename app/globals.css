@@ -11,3 +11,13 @@
   }
 }
 
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .transition-smooth {
+    transition-duration: 150ms;
+  }
+}
+
