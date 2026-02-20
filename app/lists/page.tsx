@@ -93,14 +93,14 @@ export default function ListsPage() {
     <div className="p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Lists</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">Lists</h1>
           <p className="mt-1 text-sm text-neutral-400">
             Organize companies into custom lists
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-neutral-800"
+          className="flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-smooth hover:bg-neutral-800"
         >
           <Plus className="h-4 w-4" />
           New List
@@ -131,7 +131,7 @@ export default function ListsPage() {
                   if (e.key === "Enter") handleCreateList();
                 }}
                 placeholder="List name..."
-                className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+                className="w-full rounded-md border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                 autoFocus
               />
               <div className="flex justify-end gap-2">
@@ -140,14 +140,14 @@ export default function ListsPage() {
                     setShowCreateModal(false);
                     setNewListName("");
                   }}
-                  className="rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-300 transition-colors hover:bg-neutral-800"
+                  className="rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-300 transition-smooth hover:bg-neutral-800"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateList}
                   disabled={!newListName.trim()}
-                  className="rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-smooth hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Create
                 </button>
@@ -161,10 +161,10 @@ export default function ListsPage() {
         <div className="lg:col-span-1">
           <Card title="Your Lists">
             {lists.length === 0 ? (
-              <div className="py-8 text-center">
-                <p className="text-sm text-neutral-500">No lists yet</p>
-                <p className="mt-2 text-xs text-neutral-600">
-                  Create a list to get started
+              <div className="py-12 text-center">
+                <p className="text-sm font-medium text-neutral-400">No lists yet</p>
+                <p className="mt-2 text-xs text-neutral-500">
+                  Create a list to organize companies
                 </p>
               </div>
             ) : (
@@ -173,10 +173,10 @@ export default function ListsPage() {
                   <button
                     key={list.id}
                     onClick={() => setSelectedList(list)}
-                    className={`w-full rounded px-3 py-2 text-left text-sm transition-colors ${
+                    className={`w-full rounded-md px-3 py-2 text-left text-sm transition-smooth ${
                       selectedList?.id === list.id
                         ? "bg-neutral-800 text-white"
-                        : "text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-300"
+                        : "text-neutral-400 transition-smooth hover:bg-neutral-800/50 hover:text-neutral-300"
                     }`}
                   >
                     <div className="flex items-center justify-between">
@@ -217,7 +217,7 @@ export default function ListsPage() {
                   {listCompanies.length > 0 && (
                     <button
                       onClick={handleExport}
-                      className="flex items-center gap-2 rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-neutral-800"
+                      className="flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-smooth hover:bg-neutral-800"
                     >
                       <Download className="h-4 w-4" />
                       Export CSV
@@ -271,7 +271,10 @@ export default function ListsPage() {
               ) : (
                 <Card>
                   <div className="py-12 text-center">
-                    <p className="text-sm text-neutral-500">No companies in this list</p>
+                    <p className="text-sm font-medium text-neutral-400">No companies in this list</p>
+                    <p className="mt-2 text-xs text-neutral-500">
+                      Add companies from the list below
+                    </p>
                   </div>
                 </Card>
               )}
@@ -290,7 +293,7 @@ export default function ListsPage() {
                         </div>
                         <button
                           onClick={() => handleAddCompany(company.id)}
-                          className="rounded border border-neutral-800 bg-neutral-900 px-3 py-1 text-xs font-medium text-neutral-300 transition-colors hover:bg-neutral-800"
+                          className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs font-medium text-neutral-300 transition-smooth hover:bg-neutral-800"
                         >
                           Add
                         </button>
