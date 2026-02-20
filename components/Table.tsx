@@ -77,7 +77,7 @@ export function Table<T extends { id: string }>({
               <tr
                 key={row.id}
                 onClick={() => onRowClick?.(row)}
-                className="cursor-pointer border-b border-neutral-800/30 transition-colors hover:bg-neutral-900/50"
+                className="cursor-pointer border-b border-neutral-800/30 transition-smooth hover:bg-neutral-900/50"
               >
                 {columns.map((column) => (
                   <td
