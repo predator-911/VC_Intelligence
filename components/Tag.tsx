@@ -10,10 +10,7 @@ export function Tag({ children, variant = "default", className }: TagProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-1.5 py-0.5 text-xs font-normal text-neutral-500",
-        variant === "sector" && "bg-neutral-900 border border-neutral-800",
-        variant === "stage" && "bg-neutral-900 border border-neutral-800",
-        variant === "default" && "bg-neutral-900 border border-neutral-800",
+        "inline-flex items-center rounded-md border border-neutral-700 bg-neutral-800 px-2 py-1 text-xs font-normal text-neutral-400",
         className
       )}
     >
