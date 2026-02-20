@@ -18,6 +18,8 @@ export type Stage =
   | "Series D+"
   | "Growth";
 
+export type SignalStatus = "positive" | "neutral" | "negative" | "none";
+
 export interface Company {
   id: string;
   name: string;
@@ -30,6 +32,8 @@ export interface Company {
   location?: string;
   lastFunding?: string;
   lastFundingAmount?: string;
+  signals?: SignalStatus;
+  lastActivity?: string;
 }
 
 export interface EnrichmentData {
