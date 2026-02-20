@@ -12,12 +12,20 @@ import { sectors, stages } from "@/lib/data";
 
 export default function SavedSearchesPage() {
   const router = useRouter();
+
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newSearchName, setNewSearchName] = useState("");
   const [newSearchQuery, setNewSearchQuery] = useState("");
-  const [newSearchSector, setNewSearchSector] = useState<string>("");
-  const [newSearchStage, setNewSearchStage] = useState<string>("");
+
+  // ✅ FIXED TYPES HERE
+  const [newSearchSector, setNewSearchSector] = useState<
+    (typeof sectors)[number] | ""
+  >("");
+
+  const [newSearchStage, setNewSearchStage] = useState<
+    (typeof stages)[number] | ""
+  >("");
 
   useEffect(() => {
     setSavedSearches(storage.savedSearches.getAll());
@@ -30,13 +38,15 @@ export default function SavedSearchesPage() {
       id: Date.now().toString(),
       name: newSearchName.trim(),
       query: newSearchQuery.trim(),
-      sector: newSearchSector || undefined,
-      stage: newSearchStage || undefined,
+      sector: newSearchSector ? newSearchSector : undefined,
+      stage: newSearchStage ? newSearchStage : undefined,
       createdAt: new Date().toISOString(),
     };
 
     storage.savedSearches.add(newSearch);
     setSavedSearches(storage.savedSearches.getAll());
+
+    // Reset form
     setNewSearchName("");
     setNewSearchQuery("");
     setNewSearchSector("");
@@ -56,6 +66,7 @@ export default function SavedSearchesPage() {
     if (search.query) params.set("q", search.query);
     if (search.sector) params.set("sector", search.sector);
     if (search.stage) params.set("stage", search.stage);
+
     router.push(`/companies?${params.toString()}`);
   };
 
@@ -68,6 +79,7 @@ export default function SavedSearchesPage() {
             Save and re-run your search queries
           </p>
         </div>
+
         <button
           onClick={() => setShowCreateModal(true)}
           className="flex items-center gap-2 rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-neutral-800"
@@ -80,7 +92,10 @@ export default function SavedSearchesPage() {
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <Card className="w-full max-w-lg">
-            <h2 className="mb-4 text-lg font-semibold text-white">Save Search</h2>
+            <h2 className="mb-4 text-lg font-semibold text-white">
+              Save Search
+            </h2>
+
             <div className="space-y-4">
               <div>
                 <label className="mb-1 block text-xs font-medium text-neutral-400">
@@ -95,6 +110,7 @@ export default function SavedSearchesPage() {
                   autoFocus
                 />
               </div>
+
               <div>
                 <label className="mb-1 block text-xs font-medium text-neutral-400">
                   Query
@@ -107,6 +123,7 @@ export default function SavedSearchesPage() {
                   className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="mb-1 block text-xs font-medium text-neutral-400">
@@ -114,7 +131,11 @@ export default function SavedSearchesPage() {
                   </label>
                   <select
                     value={newSearchSector}
-                    onChange={(e) => setNewSearchSector(e.target.value)}
+                    onChange={(e) =>
+                      setNewSearchSector(
+                        e.target.value as (typeof sectors)[number] | ""
+                      )
+                    }
                     className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                   >
                     <option value="">All Sectors</option>
@@ -125,13 +146,18 @@ export default function SavedSearchesPage() {
                     ))}
                   </select>
                 </div>
+
                 <div>
                   <label className="mb-1 block text-xs font-medium text-neutral-400">
                     Stage
                   </label>
                   <select
                     value={newSearchStage}
-                    onChange={(e) => setNewSearchStage(e.target.value)}
+                    onChange={(e) =>
+                      setNewSearchStage(
+                        e.target.value as (typeof stages)[number] | ""
+                      )
+                    }
                     className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                   >
                     <option value="">All Stages</option>
@@ -143,6 +169,7 @@ export default function SavedSearchesPage() {
                   </select>
                 </div>
               </div>
+
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => {
@@ -156,6 +183,7 @@ export default function SavedSearchesPage() {
                 >
                   Cancel
                 </button>
+
                 <button
                   onClick={handleCreateSearch}
                   disabled={!newSearchName.trim()}
@@ -173,7 +201,9 @@ export default function SavedSearchesPage() {
         <Card>
           <div className="py-12 text-center">
             <Search className="mx-auto h-12 w-12 text-neutral-600" />
-            <p className="mt-4 text-sm text-neutral-500">No saved searches yet</p>
+            <p className="mt-4 text-sm text-neutral-500">
+              No saved searches yet
+            </p>
             <p className="mt-2 text-xs text-neutral-600">
               Save your search queries to quickly re-run them later
             </p>
@@ -185,7 +215,10 @@ export default function SavedSearchesPage() {
             <Card key={search.id}>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-white">{search.name}</h3>
+                  <h3 className="text-sm font-semibold text-white">
+                    {search.name}
+                  </h3>
+
                   <div className="mt-2 space-y-1.5">
                     {search.query && (
                       <div className="flex items-center gap-2 text-xs text-neutral-400">
@@ -193,15 +226,22 @@ export default function SavedSearchesPage() {
                         {search.query}
                       </div>
                     )}
+
                     <div className="flex flex-wrap gap-1.5">
-                      {search.sector && <Tag variant="sector">{search.sector}</Tag>}
-                      {search.stage && <Tag variant="stage">{search.stage}</Tag>}
+                      {search.sector && (
+                        <Tag variant="sector">{search.sector}</Tag>
+                      )}
+                      {search.stage && (
+                        <Tag variant="stage">{search.stage}</Tag>
+                      )}
                     </div>
+
                     <div className="text-xs text-neutral-500">
                       Saved {formatDate(search.createdAt)}
                     </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleRunSearch(search)}
@@ -210,6 +250,7 @@ export default function SavedSearchesPage() {
                   >
                     <Search className="h-4 w-4" />
                   </button>
+
                   <button
                     onClick={() => handleDeleteSearch(search.id)}
                     className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-red-400"
@@ -226,4 +267,3 @@ export default function SavedSearchesPage() {
     </div>
   );
 }
-
