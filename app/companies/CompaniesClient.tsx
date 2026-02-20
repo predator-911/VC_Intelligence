@@ -3,33 +3,28 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { mockCompanies, sectors, stages } from "@/lib/data";
-import { filterCompanies, sortCompanies } from "@/lib/utils";
+import { filterCompanies, sortCompanies, formatRelativeTime } from "@/lib/utils";
 import { Company, Sector, Stage } from "@/types";
 import { Table } from "@/components/Table";
 import { Tag } from "@/components/Tag";
+import { SignalIndicator } from "@/components/SignalIndicator";
+import { Filter } from "lucide-react";
 
 const ITEMS_PER_PAGE = 10;
 
-export default function CompaniesClient() {
+export default function CompaniesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const [query, setQuery] = useState("");
-  const [selectedSector, setSelectedSector] = useState<Sector | undefined>();
-  const [selectedStage, setSelectedStage] = useState<Stage | undefined>();
-  const [sortBy, setSortBy] = useState("name");
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [selectedSector, setSelectedSector] = useState<Sector | undefined>(
+    (searchParams.get("sector") as Sector) || undefined
+  );
+  const [selectedStage, setSelectedStage] = useState<Stage | undefined>(
+    (searchParams.get("stage") as Stage) || undefined
+  );
+  const [sortBy, setSortBy] = useState<string>("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    const q = searchParams.get("q");
-    const sector = searchParams.get("sector");
-    const stage = searchParams.get("stage");
-
-    if (q) setQuery(q);
-    if (sector) setSelectedSector(sector as Sector);
-    if (stage) setSelectedStage(stage as Stage);
-  }, [searchParams]);
 
   const filtered = useMemo(() => {
     let result = filterCompanies(mockCompanies, query, selectedSector, selectedStage);
@@ -42,15 +37,27 @@ export default function CompaniesClient() {
     return filtered.slice(start, start + ITEMS_PER_PAGE);
   }, [filtered, currentPage]);
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+
+  const handleSort = (key: string) => {
+    if (sortBy === key) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(key);
+      setSortOrder("asc");
+    }
+  };
+
   const columns = [
     {
       key: "name",
       label: "Company",
       sortable: true,
+      className: "min-w-[200px]",
       render: (company: Company) => (
         <div>
-          <div className="font-medium text-white">{company.name}</div>
-          <div className="text-xs text-neutral-500">{company.website}</div>
+          <div className="font-medium text-white text-xs">{company.name}</div>
+          <div className="text-xs text-neutral-600 mt-0.5">{company.website.replace(/^https?:\/\//, "")}</div>
         </div>
       ),
     },
@@ -58,37 +65,161 @@ export default function CompaniesClient() {
       key: "sector",
       label: "Sector",
       sortable: true,
+      className: "w-[140px]",
       render: (company: Company) => <Tag variant="sector">{company.sector}</Tag>,
     },
     {
       key: "stage",
       label: "Stage",
       sortable: true,
+      className: "w-[100px]",
       render: (company: Company) => <Tag variant="stage">{company.stage}</Tag>,
+    },
+    {
+      key: "signals",
+      label: "Signals",
+      className: "w-[120px]",
+      render: (company: Company) => (
+        <SignalIndicator status={company.signals || "none"} />
+      ),
+    },
+    {
+      key: "description",
+      label: "Description",
+      className: "min-w-[300px]",
+      render: (company: Company) => (
+        <div className="max-w-md truncate text-neutral-500 text-xs">{company.description}</div>
+      ),
+    },
+    {
+      key: "lastActivity",
+      label: "Last Activity",
+      sortable: true,
+      className: "w-[100px]",
+      render: (company: Company) => (
+        <span className="text-neutral-500 text-xs">
+          {company.lastActivity ? formatRelativeTime(company.lastActivity) : "—"}
+        </span>
+      ),
+    },
+    {
+      key: "lastFunding",
+      label: "Funding",
+      className: "w-[120px]",
+      render: (company: Company) => (
+        <div>
+          {company.lastFundingAmount ? (
+            <div className="text-white text-xs font-medium">{company.lastFundingAmount}</div>
+          ) : (
+            <span className="text-neutral-600 text-xs">—</span>
+          )}
+        </div>
+      ),
     },
   ];
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-semibold text-white mb-6">
-        {filtered.length} Companies
-      </h1>
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-white">Companies</h1>
+          <p className="mt-0.5 text-xs text-neutral-500">
+            {filtered.length} {filtered.length === 1 ? "company" : "companies"}
+          </p>
+        </div>
+      </div>
 
-      <Table
-        columns={columns}
-        data={paginated}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onSort={(key) => {
-          if (sortBy === key) {
-            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-          } else {
-            setSortBy(key);
-            setSortOrder("asc");
-          }
-        }}
-        onRowClick={(company) => router.push(`/companies/${company.id}`)}
-      />
+      <div className="mb-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            placeholder="Search companies..."
+            className="flex-1 rounded border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-200 placeholder:text-neutral-600 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+          />
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <Filter className="h-3.5 w-3.5 text-neutral-600" />
+            <span className="text-xs text-neutral-500">Filters:</span>
+          </div>
+          <select
+            value={selectedSector || ""}
+            onChange={(e) => {
+              setSelectedSector((e.target.value as Sector) || undefined);
+              setCurrentPage(1);
+            }}
+            className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+          >
+            <option value="">All Sectors</option>
+            {sectors.map((sector) => (
+              <option key={sector} value={sector}>
+                {sector}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedStage || ""}
+            onChange={(e) => {
+              setSelectedStage((e.target.value as Stage) || undefined);
+              setCurrentPage(1);
+            }}
+            className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+          >
+            <option value="">All Stages</option>
+            {stages.map((stage) => (
+              <option key={stage} value={stage}>
+                {stage}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="rounded border border-neutral-800 bg-neutral-900">
+        <Table
+          columns={columns}
+          data={paginated}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={handleSort}
+          onRowClick={(company) => router.push(`/companies/${company.id}`)}
+        />
+      </div>
+
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-xs text-neutral-500">
+            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
+            {Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-xs text-neutral-500">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
