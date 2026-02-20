@@ -105,11 +105,11 @@ export default function CompaniesPage() {
     {
       key: "lastFunding",
       label: "Funding",
-      className: "w-[120px]",
+      className: "w-[120px] text-right",
       render: (company: Company) => (
-        <div>
+        <div className="text-right">
           {company.lastFundingAmount ? (
-            <div className="text-white text-xs font-medium">{company.lastFundingAmount}</div>
+            <div className="tabular-nums text-white text-xs font-medium">{company.lastFundingAmount}</div>
           ) : (
             <span className="text-neutral-600 text-xs">—</span>
           )}
@@ -120,17 +120,17 @@ export default function CompaniesPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-white">Companies</h1>
-          <p className="mt-0.5 text-xs text-neutral-500">
+          <h1 className="text-2xl font-semibold tracking-tight text-white">Companies</h1>
+          <p className="mt-1 text-sm text-neutral-400">
             {filtered.length} {filtered.length === 1 ? "company" : "companies"}
           </p>
         </div>
       </div>
 
-      <div className="mb-4 space-y-3">
-        <div className="flex items-center gap-3">
+      <div className="mb-6 space-y-4">
+        <div className="flex items-center gap-4">
           <input
             type="text"
             value={query}
@@ -139,14 +139,14 @@ export default function CompaniesPage() {
               setCurrentPage(1);
             }}
             placeholder="Search companies..."
-            className="flex-1 rounded border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-200 placeholder:text-neutral-600 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+            className="flex-1 rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <Filter className="h-3.5 w-3.5 text-neutral-600" />
-            <span className="text-xs text-neutral-500">Filters:</span>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-neutral-500" />
+            <span className="text-sm text-neutral-400">Filters:</span>
           </div>
           <select
             value={selectedSector || ""}
@@ -154,7 +154,7 @@ export default function CompaniesPage() {
               setSelectedSector((e.target.value as Sector) || undefined);
               setCurrentPage(1);
             }}
-            className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+            className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-200 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
           >
             <option value="">All Sectors</option>
             {sectors.map((sector) => (
@@ -169,7 +169,7 @@ export default function CompaniesPage() {
               setSelectedStage((e.target.value as Stage) || undefined);
               setCurrentPage(1);
             }}
-            className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+            className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-200 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
           >
             <option value="">All Stages</option>
             {stages.map((stage) => (
@@ -181,7 +181,7 @@ export default function CompaniesPage() {
         </div>
       </div>
 
-      <div className="rounded border border-neutral-800 bg-neutral-900">
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 shadow-sm">
         <Table
           columns={columns}
           data={paginated}
@@ -193,8 +193,8 @@ export default function CompaniesPage() {
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between">
-          <div className="text-xs text-neutral-500">
+        <div className="mt-6 flex items-center justify-between">
+          <div className="text-sm text-neutral-400">
             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
             {Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length}
           </div>
@@ -202,17 +202,17 @@ export default function CompaniesPage() {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-300 transition-smooth hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Previous
             </button>
-            <span className="text-xs text-neutral-500">
+            <span className="text-sm text-neutral-400">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="rounded border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-300 transition-smooth hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
             </button>
