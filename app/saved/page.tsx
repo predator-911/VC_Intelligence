@@ -12,20 +12,12 @@ import { sectors, stages } from "@/lib/data";
 
 export default function SavedSearchesPage() {
   const router = useRouter();
-
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newSearchName, setNewSearchName] = useState("");
   const [newSearchQuery, setNewSearchQuery] = useState("");
-
-  // ✅ FIXED TYPES HERE
-  const [newSearchSector, setNewSearchSector] = useState<
-    (typeof sectors)[number] | ""
-  >("");
-
-  const [newSearchStage, setNewSearchStage] = useState<
-    (typeof stages)[number] | ""
-  >("");
+  const [newSearchSector, setNewSearchSector] = useState<string>("");
+  const [newSearchStage, setNewSearchStage] = useState<string>("");
 
   useEffect(() => {
     setSavedSearches(storage.savedSearches.getAll());
@@ -38,15 +30,13 @@ export default function SavedSearchesPage() {
       id: Date.now().toString(),
       name: newSearchName.trim(),
       query: newSearchQuery.trim(),
-      sector: newSearchSector ? newSearchSector : undefined,
-      stage: newSearchStage ? newSearchStage : undefined,
+      sector: newSearchSector || undefined,
+      stage: newSearchStage || undefined,
       createdAt: new Date().toISOString(),
     };
 
     storage.savedSearches.add(newSearch);
     setSavedSearches(storage.savedSearches.getAll());
-
-    // Reset form
     setNewSearchName("");
     setNewSearchQuery("");
     setNewSearchSector("");
@@ -66,7 +56,6 @@ export default function SavedSearchesPage() {
     if (search.query) params.set("q", search.query);
     if (search.sector) params.set("sector", search.sector);
     if (search.stage) params.set("stage", search.stage);
-
     router.push(`/companies?${params.toString()}`);
   };
 
@@ -74,15 +63,14 @@ export default function SavedSearchesPage() {
     <div className="p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Saved Searches</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">Saved Searches</h1>
           <p className="mt-1 text-sm text-neutral-400">
             Save and re-run your search queries
           </p>
         </div>
-
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-colors hover:bg-neutral-800"
+          className="flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-neutral-200 transition-smooth hover:bg-neutral-800"
         >
           <Plus className="h-4 w-4" />
           New Search
@@ -92,10 +80,7 @@ export default function SavedSearchesPage() {
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <Card className="w-full max-w-lg">
-            <h2 className="mb-4 text-lg font-semibold text-white">
-              Save Search
-            </h2>
-
+            <h2 className="mb-4 text-lg font-semibold text-white">Save Search</h2>
             <div className="space-y-4">
               <div>
                 <label className="mb-1 block text-xs font-medium text-neutral-400">
@@ -106,13 +91,12 @@ export default function SavedSearchesPage() {
                   value={newSearchName}
                   onChange={(e) => setNewSearchName(e.target.value)}
                   placeholder="e.g., Series A SaaS companies"
-                  className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+                  className="w-full rounded-md border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                   autoFocus
                 />
               </div>
-
               <div>
-                <label className="mb-1 block text-xs font-medium text-neutral-400">
+                <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
                   Query
                 </label>
                 <input
@@ -120,23 +104,18 @@ export default function SavedSearchesPage() {
                   value={newSearchQuery}
                   onChange={(e) => setNewSearchQuery(e.target.value)}
                   placeholder="Search term..."
-                  className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+                  className="w-full rounded-md border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 placeholder:text-neutral-500 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                 />
               </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-neutral-400">
+                  <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
                     Sector
                   </label>
                   <select
                     value={newSearchSector}
-                    onChange={(e) =>
-                      setNewSearchSector(
-                        e.target.value as (typeof sectors)[number] | ""
-                      )
-                    }
-                    className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+                    onChange={(e) => setNewSearchSector(e.target.value)}
+                    className="w-full rounded-md border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                   >
                     <option value="">All Sectors</option>
                     {sectors.map((sector) => (
@@ -146,19 +125,14 @@ export default function SavedSearchesPage() {
                     ))}
                   </select>
                 </div>
-
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-neutral-400">
+                  <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
                     Stage
                   </label>
                   <select
                     value={newSearchStage}
-                    onChange={(e) =>
-                      setNewSearchStage(
-                        e.target.value as (typeof stages)[number] | ""
-                      )
-                    }
-                    className="w-full rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-200 focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
+                    onChange={(e) => setNewSearchStage(e.target.value)}
+                    className="w-full rounded-md border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-200 transition-smooth focus:border-neutral-700 focus:outline-none focus:ring-1 focus:ring-neutral-700"
                   >
                     <option value="">All Stages</option>
                     {stages.map((stage) => (
@@ -169,7 +143,6 @@ export default function SavedSearchesPage() {
                   </select>
                 </div>
               </div>
-
               <div className="flex justify-end gap-2">
                 <button
                   onClick={() => {
@@ -179,15 +152,14 @@ export default function SavedSearchesPage() {
                     setNewSearchSector("");
                     setNewSearchStage("");
                   }}
-                  className="rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-300 transition-colors hover:bg-neutral-800"
+                  className="rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-300 transition-smooth hover:bg-neutral-800"
                 >
                   Cancel
                 </button>
-
                 <button
                   onClick={handleCreateSearch}
                   disabled={!newSearchName.trim()}
-                  className="rounded border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-smooth hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Save
                 </button>
@@ -201,10 +173,8 @@ export default function SavedSearchesPage() {
         <Card>
           <div className="py-12 text-center">
             <Search className="mx-auto h-12 w-12 text-neutral-600" />
-            <p className="mt-4 text-sm text-neutral-500">
-              No saved searches yet
-            </p>
-            <p className="mt-2 text-xs text-neutral-600">
+            <p className="mt-4 text-sm font-medium text-neutral-400">No saved searches yet</p>
+            <p className="mt-2 text-xs text-neutral-500">
               Save your search queries to quickly re-run them later
             </p>
           </div>
@@ -215,10 +185,7 @@ export default function SavedSearchesPage() {
             <Card key={search.id}>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-white">
-                    {search.name}
-                  </h3>
-
+                  <h3 className="text-sm font-semibold text-white">{search.name}</h3>
                   <div className="mt-2 space-y-1.5">
                     {search.query && (
                       <div className="flex items-center gap-2 text-xs text-neutral-400">
@@ -226,22 +193,15 @@ export default function SavedSearchesPage() {
                         {search.query}
                       </div>
                     )}
-
                     <div className="flex flex-wrap gap-1.5">
-                      {search.sector && (
-                        <Tag variant="sector">{search.sector}</Tag>
-                      )}
-                      {search.stage && (
-                        <Tag variant="stage">{search.stage}</Tag>
-                      )}
+                      {search.sector && <Tag variant="sector">{search.sector}</Tag>}
+                      {search.stage && <Tag variant="stage">{search.stage}</Tag>}
                     </div>
-
                     <div className="text-xs text-neutral-500">
                       Saved {formatDate(search.createdAt)}
                     </div>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleRunSearch(search)}
@@ -250,7 +210,6 @@ export default function SavedSearchesPage() {
                   >
                     <Search className="h-4 w-4" />
                   </button>
-
                   <button
                     onClick={() => handleDeleteSearch(search.id)}
                     className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-red-400"
@@ -267,3 +226,4 @@ export default function SavedSearchesPage() {
     </div>
   );
 }
+
