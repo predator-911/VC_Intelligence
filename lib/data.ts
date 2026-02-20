@@ -1,4 +1,10 @@
-import { Company, Sector, Stage } from "@/types";
+import { Company, Sector, Stage, SignalStatus } from "@/types";
+
+function getRecentDate(daysAgo: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  return date.toISOString();
+}
 
 export const mockCompanies: Company[] = [
   {
@@ -13,6 +19,8 @@ export const mockCompanies: Company[] = [
     location: "San Francisco, CA",
     lastFunding: "2024-01",
     lastFundingAmount: "$15M",
+    signals: "positive",
+    lastActivity: getRecentDate(2),
   },
   {
     id: "2",
@@ -26,6 +34,8 @@ export const mockCompanies: Company[] = [
     location: "New York, NY",
     lastFunding: "2023-11",
     lastFundingAmount: "$45M",
+    signals: "neutral",
+    lastActivity: getRecentDate(5),
   },
   {
     id: "3",
@@ -39,6 +49,8 @@ export const mockCompanies: Company[] = [
     location: "Austin, TX",
     lastFunding: "2024-02",
     lastFundingAmount: "$5M",
+    signals: "positive",
+    lastActivity: getRecentDate(1),
   },
   {
     id: "4",
@@ -52,6 +64,8 @@ export const mockCompanies: Company[] = [
     location: "Boston, MA",
     lastFunding: "2023-12",
     lastFundingAmount: "$20M",
+    signals: "neutral",
+    lastActivity: getRecentDate(8),
   },
   {
     id: "5",
@@ -65,6 +79,8 @@ export const mockCompanies: Company[] = [
     location: "Remote",
     lastFunding: "2024-03",
     lastFundingAmount: "$2M",
+    signals: "positive",
+    lastActivity: getRecentDate(0),
   },
   {
     id: "6",
@@ -78,6 +94,8 @@ export const mockCompanies: Company[] = [
     location: "Seattle, WA",
     lastFunding: "2023-09",
     lastFundingAmount: "$75M",
+    signals: "negative",
+    lastActivity: getRecentDate(15),
   },
   {
     id: "7",
@@ -91,6 +109,8 @@ export const mockCompanies: Company[] = [
     location: "San Francisco, CA",
     lastFunding: "2023-10",
     lastFundingAmount: "$50M",
+    signals: "neutral",
+    lastActivity: getRecentDate(12),
   },
   {
     id: "8",
@@ -104,6 +124,8 @@ export const mockCompanies: Company[] = [
     location: "Chicago, IL",
     lastFunding: "2024-01",
     lastFundingAmount: "$8M",
+    signals: "positive",
+    lastActivity: getRecentDate(3),
   },
   {
     id: "9",
@@ -117,6 +139,8 @@ export const mockCompanies: Company[] = [
     location: "New York, NY",
     lastFunding: "2023-11",
     lastFundingAmount: "$25M",
+    signals: "neutral",
+    lastActivity: getRecentDate(7),
   },
   {
     id: "10",
@@ -130,6 +154,8 @@ export const mockCompanies: Company[] = [
     location: "San Francisco, CA",
     lastFunding: "2024-02",
     lastFundingAmount: "$18M",
+    signals: "positive",
+    lastActivity: getRecentDate(4),
   },
   {
     id: "11",
@@ -143,6 +169,8 @@ export const mockCompanies: Company[] = [
     location: "Los Angeles, CA",
     lastFunding: "2024-01",
     lastFundingAmount: "$6M",
+    signals: "none",
+    lastActivity: getRecentDate(20),
   },
   {
     id: "12",
@@ -156,6 +184,8 @@ export const mockCompanies: Company[] = [
     location: "San Francisco, CA",
     lastFunding: "2023-08",
     lastFundingAmount: "$150M",
+    signals: "neutral",
+    lastActivity: getRecentDate(6),
   },
 ];
 
